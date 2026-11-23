@@ -99,10 +99,9 @@ cd ../.. && node scripts/probe-spec.mjs <raw URL> --app apps/<name>   # operatio
 - typecheck の既知のエラー:
   - 応答の int64 が bigint になり、応答の型が `never` / `undefined` になる（[#511](https://github.com/nakita628/hono-takibi/issues/511)）
   - hooks のキー取得関数の名前が重複する（[#536](https://github.com/nakita628/hono-takibi/issues/536)）
-  - `routeHandler` の `index.ts` が `responses` の無い操作（3.1 では省略できる）を登録するが、routes.ts と `handlers/` には無い（TS2305 / TS2724）。
-  - YAML のマージキー（`<<: *anchor`）が適用されず、それで `responses` を受け取る操作が routes.ts から黙って消える（Apify、Pi-hole）。
-  - 最初のセグメントが `{index}` のパスのハンドラが `handlers/index.ts`（バレルと同じパス）に書かれ、多くの実行でバレルが消える（OpenSearch、0.33.0 から）。
-  - この 3 件は未起票: 2026-11-23 は新規 issue の上限を超えていたので、翌日のルーティンで起票する（内容は 2026-11-23 の routeHandler 移行のコミットメッセージにある）。
+  - `routeHandler` の `index.ts` が `responses` の無い操作（3.1 では省略できる）を登録するが、routes.ts と `handlers/` には無い（TS2305 / TS2724、[#545](https://github.com/nakita628/hono-takibi/issues/545)）。
+  - YAML のマージキー（`<<: *anchor`）が適用されず、それで `responses` を受け取る操作が routes.ts から黙って消える（Apify、Pi-hole、[#544](https://github.com/nakita628/hono-takibi/issues/544)）。
+  - 最初のセグメントが `{index}` のパスのハンドラが `handlers/index.ts`（バレルと同じパス）に書かれ、多くの実行でバレルが消える（OpenSearch、0.33.0 から、[#546](https://github.com/nakita628/hono-takibi/issues/546)）。
 - 0.33.2〜0.33.7 で直ったもの（回避策は外した）: type 出力の enum（#504）とパスの `'`（#505）、数字で始まるハンドラ名（#506）、
   `content: {}`（#507）、宣言のないパス引数（#508、0.33.1）、兄弟の oneOf の展開（#510）、ステータスコード（#517）、操作のない文書の `api`（#518）、
   hook 名の衝突（#519）、区切りの途中のパス引数（#520）、長い `.openapi()` の連鎖（#521）、contentSchema（#522）、循環スキーマの null（#527）、
@@ -152,7 +151,7 @@ typecheck が通っても、エラーにならない誤出力があり得る（[
 - 不具合（ラベル `bug`）: `## What` `## Where` `## When` `## Who`（hono-takibi・Node.js・OS の版）`## How`（最小の OpenAPI、config、コマンド、実際の出力と期待する出力）`## Why`
 - 要望（ラベル `enhancement`）: `## Why` `## What` `## Where` `## Who` `## When` `## How`
 
-実例は [#497](https://github.com/nakita628/hono-takibi/issues/497)〜[#501](https://github.com/nakita628/hono-takibi/issues/501)、[#504](https://github.com/nakita628/hono-takibi/issues/504)〜[#508](https://github.com/nakita628/hono-takibi/issues/508)、[#510](https://github.com/nakita628/hono-takibi/issues/510)、[#511](https://github.com/nakita628/hono-takibi/issues/511)、[#517](https://github.com/nakita628/hono-takibi/issues/517)〜[#522](https://github.com/nakita628/hono-takibi/issues/522)、[#527](https://github.com/nakita628/hono-takibi/issues/527)、[#536](https://github.com/nakita628/hono-takibi/issues/536)、[#541](https://github.com/nakita628/hono-takibi/issues/541)。
+実例は [#497](https://github.com/nakita628/hono-takibi/issues/497)〜[#501](https://github.com/nakita628/hono-takibi/issues/501)、[#504](https://github.com/nakita628/hono-takibi/issues/504)〜[#508](https://github.com/nakita628/hono-takibi/issues/508)、[#510](https://github.com/nakita628/hono-takibi/issues/510)、[#511](https://github.com/nakita628/hono-takibi/issues/511)、[#517](https://github.com/nakita628/hono-takibi/issues/517)〜[#522](https://github.com/nakita628/hono-takibi/issues/522)、[#527](https://github.com/nakita628/hono-takibi/issues/527)、[#536](https://github.com/nakita628/hono-takibi/issues/536)、[#541](https://github.com/nakita628/hono-takibi/issues/541)、[#544](https://github.com/nakita628/hono-takibi/issues/544)〜[#546](https://github.com/nakita628/hono-takibi/issues/546)。
 issue とコメントの末尾には、必ず次の 2 行を付ける:
 
 ```markdown
